@@ -1,17 +1,17 @@
-
 import Link from "next/link";
-import Banner from "../_components/homeComponents/banner";
-import Mosaic from "../_components/homeComponents/mosaic";
-import Products from "../_components/homeComponents/products";
-import Range from "../_components/homeComponents/range";
+import Banner from "../home/_components/banner";
+import Mosaic from "../home/_components/mosaic";
+import Products from "../home/_components/products";
+import Range from "../home/_components/range";
+import { fetchProducts } from "../_resquests/products";
 
-const Home = () => {
-
+export default async function Home() {
+  const response = await fetchProducts()
   return (
     <div>
       <Banner />
       <Range />
-      <Products />
+      <Products products={response} limite={8} />
       <div className="w-full h-[550px] mx-auto p-4 flex justify-center items-center bg-[#FCF8F3]">
         <div className="w-1/3 flex flex-col justify-center items-start text-left ml-24 mr-12 right-0">
           <h1 className="sm:text-2xl md:text-3xl lg:text-4xl font-bold font-poppins mb-8">
@@ -33,4 +33,3 @@ const Home = () => {
   );
 };
 
-export default Home;

@@ -24,8 +24,9 @@ export default function BannerFixo({ firstTitle, secondTitle, thirdTitle }: Bann
                     <Image
                         src="/images/logo.svg"
                         alt="banner-shop"
-                        width={20}
-                        height={20}
+                        width={55}
+                        height={55}
+                        className="pb-2"
                     />
                     <p className="font-poppins text-center font-bold sm:text-3xl md:text-4xl lg:text-5xl">{firstTitle}</p>
                     <div className="flex pt-3">
