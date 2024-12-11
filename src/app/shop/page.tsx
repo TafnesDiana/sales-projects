@@ -1,26 +1,21 @@
-import Image from "next/image";
 import BannerFixo from "../_components/banner-fixo";
 import Frame from "../_components/baseboard/fraame";
+import { fetchProducts } from "../_resquests/products";
+import Products from "../home/_components/products";
+import Search from "./_components/search";
 
 
-const Shop = () => {
+export default async function Shop() {
+    const response = await fetchProducts()
     return (
-        <div>
-            <div className="bg-[#FAF3EA] h-auto w-screen flex">
-                <div></div>
-                <div></div>
-            </div>
-
-            
-
+        <>
             <BannerFixo
                 firstTitle="Shop"
                 secondTitle="Home"
                 thirdTitle="Shop"
             />
+            <Search products={response} />
             <Frame />
-        </div>
+        </>
     );
 };
-
-export default Shop;
