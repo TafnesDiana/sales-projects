@@ -1,14 +1,20 @@
-import { fetchProducts } from "../_resquests/products";
-import Products from "../home/_components/products";
+import { fetchProducts } from "@/app/_resquests/products";
+import ProductDescription from "./_components/productDescription";
+import ProductPresentation from "./_components/productPresentation";
+import BarRouter from "./_components/barRoute";
+import RelatedProducts from "./_components/relatedProducts";
+
+export default async function SingleProduct() {
+  const response = await fetchProducts();
 
 
-export default async function About(){
-        const response = await fetchProducts()
-    return (
-        <div>
-           <Products  products={response} limite={2} />
-            <p>oioooooooooooooooooooooooooooooooooooooooooooooooooooooooooo</p>
-        </div>
-    );
+  return (
+    <div>
+      <BarRouter products={response}/>
+      <ProductPresentation products={response}/>
+      <ProductDescription products={response}/>
+      <RelatedProducts products={response}/>
+    </div>
+  );
+}
 
-};

@@ -1,7 +1,6 @@
 import BannerFixo from "../_components/banner-fixo";
 import Frame from "../_components/baseboard/fraame";
 import { fetchProducts } from "../_resquests/products";
-import Products from "../home/_components/products";
 import Search from "./_components/search";
 
 

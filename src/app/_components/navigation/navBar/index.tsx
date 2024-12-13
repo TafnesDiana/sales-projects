@@ -6,6 +6,7 @@ import { useState } from "react";
 const Nav = () => {
   const [isOpen, setIsOpen] = useState(false);
 
+
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
@@ -85,6 +86,7 @@ const Nav = () => {
                 height={18}
                 className="cursor-pointer"
               />
+
             </div>
           </div>
         </div>

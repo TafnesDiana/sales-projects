@@ -1,5 +1,6 @@
-'use client';
+'use client'
 import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { Product } from "@/app/_components/productType";
 import ProductCard from "@/app/_components/productCard";
 
@@ -8,12 +9,16 @@ interface ProductsProps {
 }
 
 const Search = ({ products }: ProductsProps) => {
-    const [selectedCategory, setSelectedCategory] = useState<string>("All");
+    const searchParams = useSearchParams(); 
+    const category = searchParams.get('category') || "All";
+
+    const [selectedCategory, setSelectedCategory] = useState<string>(category ? String(category) : "All");
+    const [selectedSort, setSelectedSort] = useState<string>("none");
     const [isFilterVisible, setIsFilterVisible] = useState(false);
     const [randomizedProducts, setRandomizedProducts] = useState<Product[]>([]);
-    const [filteredProducts, setFilteredProducts] = useState<Product[]>([]); // Adicionando o estado para os produtos filtrados
-    const [currentPage, setCurrentPage] = useState<number>(1); // Página atual
-    const productsPerPage = 8; // Número de produtos por página
+    const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const productsPerPage = 8;
 
     const categories = ["All", ...new Set(products.map((product) => product.category))];
 
@@ -21,31 +26,41 @@ const Search = ({ products }: ProductsProps) => {
         setIsFilterVisible(!isFilterVisible);
     };
 
+    // Função para ordenar os produtos
+    const sortProducts = (products: Product[], sortOption: string) => {
+        if (sortOption === "alphabetical") {
+            return [...products].sort((a, b) => a.title.localeCompare(b.title));
+        } else if (sortOption === "price-asc") {
+            return [...products].sort((a, b) => a.salePrice - b.salePrice);
+        } else if (sortOption === "price-desc") {
+            return [...products].sort((a, b) => b.salePrice - a.salePrice);
+        }
+        return products; // Caso seja "none", retorna os produtos sem alteração
+    };
+
     useEffect(() => {
         const shuffledProducts = [...products].sort(() => Math.random() - 0.5);
         setRandomizedProducts(shuffledProducts);
-        setFilteredProducts(shuffledProducts); // Inicialmente todos os produtos são exibidos
+        setFilteredProducts(shuffledProducts);
     }, [products]);
 
     useEffect(() => {
-        if (selectedCategory === "All") {
-            setFilteredProducts(randomizedProducts); // Exibe todos os produtos quando a categoria é "All"
-        } else {
-            const filtered = randomizedProducts.filter((product) => product.category === selectedCategory);
-            setFilteredProducts(filtered); // Exibe apenas os produtos filtrados
+        let filtered = randomizedProducts;
+        if (selectedCategory !== "All") {
+            filtered = randomizedProducts.filter((product) => product.category === selectedCategory);
         }
-        setCurrentPage(1); // Reseta a página para 1 sempre que o filtro mudar
-    }, [selectedCategory, randomizedProducts]);
+        // Aplica a ordenação selecionada
+        filtered = sortProducts(filtered, selectedSort);
+        setFilteredProducts(filtered);
+        setCurrentPage(1); // Reseta para a primeira página após qualquer filtro ou ordenação
+    }, [selectedCategory, selectedSort, randomizedProducts]);
 
-    // Função para dividir os produtos pela página
     const indexOfLastProduct = currentPage * productsPerPage;
     const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
     const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
 
-    // Função para alterar a página
     const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
-    // Calcular o número total de páginas
     const pageNumbers = [];
     for (let i = 1; i <= Math.ceil(filteredProducts.length / productsPerPage); i++) {
         pageNumbers.push(i);
@@ -71,7 +86,16 @@ const Search = ({ products }: ProductsProps) => {
                     </div>
                     <div className="flex items-center">
                         <p className="font-poppins text-sm md:text-base mr-2">Sort by</p>
-                        <p className="bg-white px-6 py-3 text-[#9F9F9F]">{selectedCategory}</p>
+                        <select
+                            className="bg-white px-6 py-3 text-[#9F9F9F]"
+                            value={selectedSort}
+                            onChange={(e) => setSelectedSort(e.target.value)}
+                        >
+                            <option value="none">No Filter</option>
+                            <option value="alphabetical">Alphabetical A-Z</option>
+                            <option value="price-asc">lowest price</option>
+                            <option value="price-desc">highest price</option>
+                        </select>
                     </div>
                 </div>
             </div>
@@ -94,7 +118,6 @@ const Search = ({ products }: ProductsProps) => {
                     </div>
                 )}
 
-                {/* Cards */}
                 <div className={`flex flex-wrap items-center justify-center sm:justify-start gap-4 md:gap-6 pl-8 ${isFilterVisible ? 'md:w-3/4' : 'w-full'}`}>
                     {currentProducts.map((product) => (
                         <ProductCard key={product.id} product={product} />
@@ -102,7 +125,6 @@ const Search = ({ products }: ProductsProps) => {
                 </div>
             </div>
 
-            {/* Paginação */}
             <div className="flex justify-center my-4">
                 <ul className="flex space-x-4">
                     {pageNumbers.map((number) => (

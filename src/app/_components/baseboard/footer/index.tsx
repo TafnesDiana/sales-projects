@@ -2,7 +2,7 @@ import Link from "next/link";
 
 const Footer = () => {
     return (
-        <div className="px-32 pt-16 border-t-4 border-[#D9D9D9]">
+        <div className="px-32 pt-16 border-t-2 border-[#D9D9D9]">
             <div className="flex flex-col md:flex-row items-start space-x-4 gap-6 md:gap-4">
                 <div className="pr-6 md:pr-8">
                     <h1 className="font-poppins font-bold text-lg md:text-xl  sm:pb-8 md:pb-10 lg:pb-12">Furniro.</h1>
