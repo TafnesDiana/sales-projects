@@ -26,7 +26,6 @@ const Search = ({ products }: ProductsProps) => {
         setIsFilterVisible(!isFilterVisible);
     };
 
-    // Função para ordenar os produtos
     const sortProducts = (products: Product[], sortOption: string) => {
         if (sortOption === "alphabetical") {
             return [...products].sort((a, b) => a.title.localeCompare(b.title));
@@ -35,7 +34,7 @@ const Search = ({ products }: ProductsProps) => {
         } else if (sortOption === "price-desc") {
             return [...products].sort((a, b) => b.salePrice - a.salePrice);
         }
-        return products; // Caso seja "none", retorna os produtos sem alteração
+        return products;
     };
 
     useEffect(() => {
@@ -49,10 +48,9 @@ const Search = ({ products }: ProductsProps) => {
         if (selectedCategory !== "All") {
             filtered = randomizedProducts.filter((product) => product.category === selectedCategory);
         }
-        // Aplica a ordenação selecionada
         filtered = sortProducts(filtered, selectedSort);
         setFilteredProducts(filtered);
-        setCurrentPage(1); // Reseta para a primeira página após qualquer filtro ou ordenação
+        setCurrentPage(1);
     }, [selectedCategory, selectedSort, randomizedProducts]);
 
     const indexOfLastProduct = currentPage * productsPerPage;
