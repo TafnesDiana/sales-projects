@@ -35,17 +35,7 @@ const Checkout = () => {
                             />
                             <input
                                 type="text"
-                                placeholder="ZIP Code"
-                                className="w-full font-poppins border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring focus:ring-[#B88E2F]"
-                            />
-                            <input
-                                type="text"
                                 placeholder="Country / Region"
-                                className="w-full font-poppins border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring focus:ring-[#B88E2F]"
-                            />
-                            <input
-                                type="text"
-                                placeholder="Street address"
                                 className="w-full font-poppins border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring focus:ring-[#B88E2F]"
                             />
                             <input
@@ -56,6 +46,16 @@ const Checkout = () => {
                             <input
                                 type="text"
                                 placeholder="Province"
+                                className="w-full font-poppins border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring focus:ring-[#B88E2F]"
+                            />
+                            <input
+                                type="text"
+                                placeholder="ZIP Code"
+                                className="w-full font-poppins border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring focus:ring-[#B88E2F]"
+                            />
+                            <input
+                                type="text"
+                                placeholder="Street address"
                                 className="w-full font-poppins border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring focus:ring-[#B88E2F]"
                             />
                             <input
@@ -93,8 +93,8 @@ const Checkout = () => {
 
                         <div className="mt-4">
                             <div className="flex">
-                            <img src="/images/circulo.svg" alt="" />
-                            <p className="ml-4 font-poppins">Direct Bank Transfer</p>
+                                <img src="/images/circulo.svg" alt="" />
+                                <p className="ml-4 font-poppins">Direct Bank Transfer</p>
                             </div>
                             <p className="font-poppins text-[#9F9F9F] pb-4">Make your payment directly into our bank account. Please use your Order ID as the payment reference. Your order will not be shipped until the funds have cleared in our account.</p>
                             <div className="space-y-2">
@@ -112,7 +112,7 @@ const Checkout = () => {
 
                         <div className="mt-6 flex justify-center items-center">
                             <Button className=" py-4 px-16 rounded-lg ">
-                            Place Order
+                                Place Order
                             </Button>
 
                         </div>

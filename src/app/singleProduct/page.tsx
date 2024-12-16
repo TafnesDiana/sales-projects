@@ -11,7 +11,7 @@ export default async function SingleProduct() {
   return (
     <div>
       <BarRouter products={response}/>
-      <ProductPresentation products={response}/>
+      <ProductPresentation products={response} />
       <ProductDescription products={response}/>
       <RelatedProducts products={response}/>
     </div>

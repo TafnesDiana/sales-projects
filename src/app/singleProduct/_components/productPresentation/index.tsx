@@ -1,18 +1,65 @@
 'use client';
 
 import { Product } from "@/app/_components/productType";
-import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+// Importando a função que interage com o LocalStorage
 import ButtonIncrement from "../../../_components/buttons/buttonIncrement";
+import { addToCart } from "../../../../../utils/cartStorage";
 
 interface ProductsProps {
   products: Product[];
 }
 
+interface CartItem {
+  id: number;
+  name: string;
+  color: string;
+  size: string;
+  quantity: number;
+  image: string;
+  price: number;  // Adicionando a propriedade price aqui
+}
+
 const ProductPresentation = ({ products }: ProductsProps) => {
   const searchParams = useSearchParams();
   const idParam = searchParams.get("id");
+
+  const [selectedColor, setSelectedColor] = useState<string | null>(null);
+  const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const [quantity, setQuantity] = useState<number>(1);
+  const [price, setPrice] = useState<number>(0);  // Inicializando a variável price com 0
+
+  useEffect(() => {
+    // Atualiza o preço apenas quando um produto é encontrado
+    if (idParam) {
+      const product = products.find((product) => product.id.toString() === idParam);
+      if (product) {
+        setPrice(product.salePrice);  // Atualiza o preço uma vez
+      }
+    }
+  }, [idParam, products]);  // Re-executa o efeito apenas quando idParam ou products mudarem
+
+  const handleAddToCart = (product: Product) => {
+    if (!selectedColor || !selectedSize) {
+      alert("Please select a color and size before adding to cart.");
+      return;
+    }
+
+    const newItem: CartItem = {
+      id: product.id,
+      name: product.title,
+      color: selectedColor,
+      size: selectedSize,
+      quantity: quantity,
+      image: product.images.mainImage,
+      price: price,  // Usando o valor de price da variável
+    };
+
+    addToCart(newItem); // Agora estamos utilizando a função que persiste no LocalStorage
+    console.log(newItem);
+    alert("Product added to cart!");
+  };
 
   if (idParam) {
     const product = products.find((product) => product.id.toString() === idParam);
@@ -61,7 +108,7 @@ const ProductPresentation = ({ products }: ProductsProps) => {
 
           <div className="flex flex-col text-justify pr-14">
             <h1 className="font-poppins text-4xl">{product.title}</h1>
-            <h2 className="font-poppins text-2xl text-[#9F9F9F] mt-2">Rs. {product.salePrice.toFixed(2)}</h2>
+            <h2 className="font-poppins text-2xl text-[#9F9F9F] mt-2">Rs. {price.toFixed(2)}</h2> {/* Usando o price armazenado */}
             <div className="flex items-center gap-2 my-4">
               <div>
                 {renderStars(product.rating)}
@@ -79,7 +126,10 @@ const ProductPresentation = ({ products }: ProductsProps) => {
                 {product.sizes.map((size, index) => (
                   <button
                     key={index}
-                    className="bg-[#F9F1E7] text-black px-4 py-2 rounded hover:bg-[#B88E2F] hover:text-white"
+                    onClick={() => setSelectedSize(size)}
+                    className={`px-4 py-2 rounded ${
+                      selectedSize === size ? "bg-[#B88E2F] text-white" : "bg-[#F9F1E7] text-black"
+                    } hover:bg-[#B88E2F] hover:text-white`}
                   >
                     {size}
                   </button>
@@ -93,42 +143,27 @@ const ProductPresentation = ({ products }: ProductsProps) => {
                 {product.colors.map((color, index) => (
                   <button
                     key={index}
-                    className="px-4 py-4 rounded-full border border-transparent hover:border-black"
+                    onClick={() => setSelectedColor(color.name)}
+                    className={`px-4 py-4 rounded-full border ${
+                      selectedColor === color.name ? "border-black" : "border-transparent"
+                    }`}
                     style={{ backgroundColor: color.hex }}
-                  >
-                  </button>
+                  ></button>
                 ))}
               </div>
             </div>
             <div className="flex items-center space-x-4 mt-6">
-                  <ButtonIncrement/>
+              <ButtonIncrement quantity={quantity} setQuantity={setQuantity} />
               <div>
-                <Link href="/cart">
-                  <button className="border border-black text-black font-poppins px-8 py-4 rounded-xl hover:bg-[#B88E2F] hover:text-white hover:border-transparent">
-                    Add To Cart
-                  </button>
-                </Link>
+                <button
+                  onClick={() => handleAddToCart(product)}
+                  className="border border-black text-black font-poppins px-8 py-4 rounded-xl hover:bg-[#B88E2F] hover:text-white hover:border-transparent"
+                >
+                  Add To Cart
+                </button>
               </div>
             </div>
             <div className="px-32 mt-8 border-t-2 border-[#D9D9D9]"></div>
-            <div className="flex pt-4">
-              <div className="flex flex-col mr-6">
-                <h1 className="text-base font-poppins text-[#9F9F9F] py-2">SKU</h1>
-                <h1 className="text-base font-poppins text-[#9F9F9F] py-2">Category</h1>
-                <h1 className="text-base font-poppins text-[#9F9F9F] py-2">Tags</h1>
-                <h1 className="text-base font-poppins text-[#9F9F9F] py-2">Share</h1>
-              </div>
-              <div className="flex flex-col">
-                <h1 className="text-base font-poppins text-[#9F9F9F] py-2">:   {product.sku}</h1>
-                <h1 className="text-base font-poppins text-[#9F9F9F] py-2">:   {product.category}</h1>
-                <h1 className="text-base font-poppins text-[#9F9F9F] py-2">:   {product.tags}</h1>
-                <h1 className="flex text-[#9F9F9F] text-base font-poppins py-2"> :
-                  <img className="px-2" src="images/facebook-page-apresentation.svg" alt="icon" />
-                  <img className="px-2" src="images/linkedlin-page-apresentation.svg" alt="icon" />
-                  <img className="px-2" src="images/twitter-page-apresentation.svg" alt="icon" />
-                </h1>
-              </div>
-            </div>
           </div>
         </div>
       );
